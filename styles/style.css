@@ -1,0 +1,17 @@
+html {
+    min-width: 100vw;
+    min-height: 100vh;
+}
+
+body {
+    min-width: 100vw;
+    min-height: 100vh;
+}
+
+.form-width {
+    width: 15vw;
+}
+
+.form-center {
+    height: 100vh;
+}
