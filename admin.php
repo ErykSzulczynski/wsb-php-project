@@ -1,11 +1,42 @@
 <?php
     session_start();
+    //if(!isset($_SESSION["user_id"]) or $_SESSION["role"] != "admin") {
+    //  header("Location: not_authorized.html");
+    //}
+    if(isset($_SESSION["user_id"]) == false) {
+      header("Location: signin.php");
+      exit;
+    }
+
+    if((isset($_SESSION["user_id"]) == false) || ($_SESSION["user_role"] != "admin")) {
+      header("Location: not_authorized.html");
+      exit;
+    }
+
     $mysqli = require __DIR__ . "/database.php";
 
     if(isset($_GET['id'])) {
       $sql = sprintf("DELETE FROM reservations WHERE id=".$_GET['id']);
   
       $result = $mysqli->query($sql);
+    }
+
+    if($_SERVER["REQUEST_METHOD"] === "POST") {
+      //$sql = sprintf("INSERT INTO reservations (null, date, time, description, user) VALUES (null, %s, %s, %s, %s)", $_POST['date'], $_POST['time'], $_POST['description'], $_POST['username']);
+
+      //$result = $mysqli->query($sql);
+
+      $username = $_POST['username'];
+      $time = $_POST['time'];
+      $date = $_POST['date'];
+      $description = $_POST['description'];
+      $sql = "INSERT INTO reservations (user,date,time,description)
+      VALUES ('$username','$date','$time','$description')";
+      if (mysqli_query($mysqli, $sql)) {
+      } else {
+       echo "Error: " . $sql . "
+   " . mysqli_error($mysqli);
+      }
     }
 ?>
 
@@ -48,14 +79,14 @@
     <a href="logout.php">
       <button type="button" class="btn btn-primary">Logout</button>
     </a>
+    <a href="index.php" class="mt-2">
+      <button type="button" class="btn btn-primary">Strona główna</button>
+    </a>
   </div>
   <div class="d-flex flex-column p-4">
-  <!-- Button trigger modal -->
 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
-  Launch demo modal
+  Dodaj rezerwacje
 </button>
-
-<!-- Modal -->
 <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
@@ -66,21 +97,29 @@
         </button>
       </div>
       <div class="modal-body">
+        <form method="post">
         <div class="form-group">
-          <label for="formGroupExampleInput">Example label</label>
-          <input type="text" class="form-control" id="formGroupExampleInput" placeholder="Example input">
+          <label for="formGroupExampleInput">Nazwa użytkownika klienta</label>
+          <input type="text" class="form-control" id="formGroupExampleInput" name="username" placeholder="Nazwa użytkownika">
         </div>
-        <label for="startDate">Start</label>
-<input id="startDate" class="form-control" type="date" />
         <div class="form-group">
-          <label for="exampleFormControlTextarea1">Example textarea</label>
-          <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+          <label for="startDate">Dzień</label>
+          <input id="startDate" class="form-control" type="date" name="date"/>
+        </div>
+        <div class="form-group">
+          <label for="startTime">Godzina</label>
+          <input id="startTime" class="form-control" type="time" name="time"/>
+        </div>
+        <div class="form-group">
+          <label for="exampleFormControlTextarea1">Opis wizyty</label>
+          <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="description"></textarea>
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Zamknij</button>
+        <button type="submit" class="btn btn-primary">Dodaj rezerwacje</button>
       </div>
+      </form>
     </div>
   </div>
 </div>  
@@ -95,7 +134,6 @@
   </thead>
   <tbody>
     <?php
-      
       $sql = sprintf("SELECT * FROM reservations");
   
       $result = $mysqli->query($sql);
@@ -104,7 +142,7 @@
         echo "<tr>
           <th>" . $row["id"] . "</th>
           <td>" . $row["date"] . "</td>
-          <td>" . $row["user_id"] . "</td>
+          <td>" . $row["user"] . "</td>
           <td><a href='admin.php?id=" . $row["id"] . "' class='btn btn-danger'>Usuń</a>
           <button type='button' class='btn btn-warning'>Edytuj</button></td>
         </tr>";

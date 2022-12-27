@@ -1,7 +1,14 @@
 <?php
     session_start();
+    if(isset($_SESSION["user_id"]) == false) {
+      header("Location: signin.php");
+      exit;
+    }
 
-    //var_dump($_SESSION);
+    if((isset($_SESSION["user_id"]) == false) || ($_SESSION["user_role"] != "admin")) {
+      header("Location: not_authorized.html");
+      exit;
+    }
 ?>
 
 <!DOCTYPE html>

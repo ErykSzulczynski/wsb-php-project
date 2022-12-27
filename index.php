@@ -1,3 +1,6 @@
+<?php
+  session_start();
+?>
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -42,6 +45,16 @@
         <a class="nav-link disabled" href="#">Disabled</a>
       </li>
     </ul>
+    <?php
+      if(isset($_SESSION['user_id'])) {
+        echo "Witaj, ". $_SESSION["user_name"] .'<a href="logout.php" class="btn btn-primary">Wyloguj</a>';
+        if($_SESSION['user_role'] == "admin") {
+          echo '<a href="admin.php" class="btn btn-primary">Panel Administratora</a>';
+        }
+      } else {
+        echo '<a href="signin.php" class="btn btn-primary">Zaloguj</a><a href="signup.html" class="btn btn-primary">Zarejestruj</a>';
+      }
+    ?>
   </div>
 </nav>
 <div class="position-relative overflow-hidden p-3 p-md-5 m-md-3 text-center bg-light">

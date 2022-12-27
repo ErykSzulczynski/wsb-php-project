@@ -13,8 +13,9 @@
         session_start();
         session_regenerate_id();
         $_SESSION["user_id"] = $user["id"];
-
-        header("Location: admin.php");
+        $_SESSION["user_role"] = $user["role"];
+        $_SESSION["user_name"] = $user["name"];
+        header("Location: index.php");
         exit;
       }
     }

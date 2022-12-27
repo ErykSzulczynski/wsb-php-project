@@ -20,7 +20,7 @@
 
     $mysqli = require __DIR__ . "/database.php";
 
-    $sql = "INSERT INTO user (name, email, password_hash) VALUES (?, ?, ?)";
+    $sql = "INSERT INTO user (name, email, role, password_hash) VALUES (?, ?, 'user', ?)";
 
     $stmt = $mysqli->prepare($sql);
 
