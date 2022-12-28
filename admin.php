@@ -21,11 +21,19 @@
       $result = $mysqli->query($sql);
     }
 
-    if($_SERVER["REQUEST_METHOD"] === "POST") {
-      //$sql = sprintf("INSERT INTO reservations (null, date, time, description, user) VALUES (null, %s, %s, %s, %s)", $_POST['date'], $_POST['time'], $_POST['description'], $_POST['username']);
-
-      //$result = $mysqli->query($sql);
-
+    if($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["id"])) {
+      $id = $_POST["id"];
+      $username = $_POST['username'];
+      $time = $_POST['time'];
+      $date = $_POST['date'];
+      $description = $_POST['description'];
+      $sql = "UPDATE reservations SET user='$username', time='$time', date='$date', description='$description' WHERE id='$id'";
+      if (mysqli_query($mysqli, $sql)) {
+      } else {
+       echo "Error: " . $sql . "
+   " . mysqli_error($mysqli);
+      }
+    } else if($_SERVER["REQUEST_METHOD"] === "POST") {
       $username = $_POST['username'];
       $time = $_POST['time'];
       $date = $_POST['date'];
@@ -38,6 +46,8 @@
    " . mysqli_error($mysqli);
       }
     }
+
+    
 ?>
 
 <!DOCTYPE html>
@@ -128,7 +138,9 @@
     <tr>
       <th scope="col">#</th>
       <th scope="col">Data</th>
+      <th scope="col">Godzina</th>
       <th scope="col">Użytkownik</th>
+      <th scope="col">Opis</th>
       <th scope="col">Operacje</th>
     </tr>
   </thead>
@@ -142,10 +154,52 @@
         echo "<tr>
           <th>" . $row["id"] . "</th>
           <td>" . $row["date"] . "</td>
+          <td>" . $row["time"] . "</td>
           <td>" . $row["user"] . "</td>
+          <td>" . $row["description"] . "</td>
           <td><a href='admin.php?id=" . $row["id"] . "' class='btn btn-danger'>Usuń</a>
-          <button type='button' class='btn btn-warning'>Edytuj</button></td>
-        </tr>";
+          <button type='button' class='btn btn-warning' data-toggle='modal' data-target='#editModalCenter".$row["id"]."'".'>Edytuj</button></td>
+        </tr>
+        <div class="modal fade" id="editModalCenter'.$row["id"].'" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <form method="post">
+                <div class="form-group">
+                  <label for="formGroupExampleInput">Id</label>
+                  <input type="text" class="form-control" id="formGroupExampleInput" name="id" value="'.$row["id"].'" readonly>
+                </div>
+                <div class="form-group">
+                  <label for="formGroupExampleInput">Nazwa użytkownika klienta</label>
+                  <input type="text" class="form-control" id="formGroupExampleInput" name="username" placeholder="Nazwa użytkownika" value="'.$row["user"].'">
+                </div>
+                <div class="form-group">
+                  <label for="startDate">Dzień</label>
+                  <input id="startDate" class="form-control" type="date" name="date" value="'.$row["date"].'"/>
+                </div>
+                <div class="form-group">
+                  <label for="startTime">Godzina</label>
+                  <input id="startTime" class="form-control" type="time" name="time" value="'.$row["time"].'"/>
+                </div>
+                <div class="form-group">
+                  <label for="exampleFormControlTextarea1">Opis wizyty</label>
+                  <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="description">'.$row["description"].'</textarea>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Zamknij</button>
+                <button type="submit" class="btn btn-primary">Edytuj</button>
+              </div>
+              </form>
+            </div>
+          </div>
+        </div>';
       }
     ?>
     <!--<tr>
