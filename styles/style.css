@@ -42,3 +42,8 @@ body {
 .main-hero-text{
     color: white;
 }
+
+.validation-alert{
+    position: absolute !important;
+    top: 0 !important;
+}

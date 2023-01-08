@@ -25,6 +25,7 @@
         $_SESSION["user_id"] = $user["id"];
         $_SESSION["user_role"] = $user["role"];
         $_SESSION["user_name"] = $user["name"];
+        $_SESSION["user_email"] = $user["user_email"];
 
 
         header("Location: index.php");
@@ -50,13 +51,13 @@
 </head>
 
 <body class="text-center">
-    <?php if($is_invalid): ?>
-    <div class="alert alert-danger" role="alert">
-        Logowanie nie powiodło się, spróbuj ponownie
-    </div>
-    <?php endif; ?>
-    <main class="row justify-content-center align-items-center form-center">
-        <form class="form-width" method="post">
+    <main class="row justify-content-center align-items-center form-center w-100">
+        <?php if($is_invalid): ?>
+        <div class="validation-alert alert alert-danger" role="alert">
+            Logowanie nie powiodło się, spróbuj ponownie
+        </div>
+        <?php endif; ?>
+        <form class="form-width w-25" method="post">
             <h1 class="h3 mb-3 fw-normal">Logowanie</h1>
 
             <div class="form-floating">

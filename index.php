@@ -1,6 +1,6 @@
 <?php
     session_start();
-
+    
     $mysqli = require __DIR__ . "/database.php";
 
     if(isset($_GET['id'])) {
@@ -13,6 +13,7 @@
         $username = $_POST['username'];
         $time = $_POST['time'];
         $date = $_POST['date'];
+
         $description = $_POST['description'];
         $sql = "UPDATE reservations SET user='$username', time='$time', date='$date', description='$description' WHERE id='$id'";
 
@@ -21,11 +22,29 @@
             echo "Error: " . $sql . mysqli_error($mysqli);
         }
     }
+
+    if($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["user_id"])) {
+      $id = $_POST["id"];
+      $username = $_POST['username'];
+      $time = $_POST['time'];
+      $date = $_POST['date'];
+
+      $description = $_POST['description'];
+      $sql = "UPDATE reservations SET user='$username', time='$time', date='$date', description='$description' WHERE id='$id'";
+
+      if (mysqli_query($mysqli, $sql)) {
+      } else {
+          echo "Error: " . $sql . mysqli_error($mysqli);
+      }
+  }
+
     else if($_SERVER["REQUEST_METHOD"] === "POST") {
+      
         $username = $_SESSION['user_name'];
         $time = $_POST['time'];
         $date = $_POST['date'];
         $description = $_POST['description'];
+
         $sql = "INSERT INTO reservations (user,date,time,description) VALUES ('$username','$date','$time','$description')";
         if (mysqli_query($mysqli, $sql)) {
         } else {
@@ -50,11 +69,44 @@
         <?php
           if(isset($_SESSION['user_id'])) {
             echo "Witaj, ". $_SESSION["user_name"] .'<a href="logout.php" class="btn btn-primary"  style="margin-right: 15px; margin-left: 15px">Wyloguj</a>';
+            echo "<button type='button' class='btn btn-primary' style='margin-right: 15px' data-toggle='modal' data-target='#editUserModalCenter'>Mój profil</button></td>";
+            echo '<div class="modal fade" id="editUserModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                    <form method="post">
+                    <div class="form-group">
+                      <label for="formGroupExampleInput">Id użytkownika</label>
+                      <input type="text" class="form-control" id="formGroupExampleInput" name="user_id" value="'.$_SESSION["user_id"].'" readonly>
+                    </div>
+                    <div class="form-group">
+                      <label for="formGroupExampleInput">Nazwa użytkownika klienta</label>
+                      <input type="text" class="form-control" id="formGroupExampleInput" name="username" placeholder="Nazwa użytkownika" value="'.$_SESSION["user_name"].'">
+                    </div>
+                    <div class="form-group">
+                      <label for="formGroupExampleInput">Nazwa użytkownika klienta</label>
+                      <input type="text" class="form-control" id="formGroupExampleInput" name="email" placeholder="Email" value="'.$_SESSION["user_name"].'">
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Zamknij</button>
+                    <button type="submit" class="btn btn-primary">Edytuj</button>
+                  </div>
+                  </form>
+                </div>
+              </div>
+            </div>';
             if($_SESSION['user_role'] == "admin") {
               echo '<a href="admin.php" class="btn btn-primary">Panel Administratora</a>';
             }
           } else {
-            echo '<a href="signin.php" class="btn btn-primary" style="margin-right: 15px">Zaloguj</a><a href="signup.html" class="btn btn-primary">Zarejestruj</a>';
+            echo '<a href="signin.php" class="btn btn-primary" style="margin-right: 15px">Zaloguj</a><a href="signup.php" class="btn btn-primary">Zarejestruj</a>';
           }
         ?>
         </div>
@@ -73,7 +125,6 @@
 
     <div class="album py-5 bg-light">
         <div class="container">
-
             <div class="row">
                 <div class="col-md-4">
                     <div class="card mb-4 box-shadow">
@@ -121,7 +172,7 @@
         </div>
     </div>
 
-    <div class="position-relative overflow-hidden p-3 p-md-5 m-md-3 text-center bg-light">
+    <div class="position-relative overflow-hidden text-center bg-light">
         <div class="col-md-5 p-lg-5 mx-auto my-5 w-25">
             <h1 class="display-4 font-weight-normal">Zarezerwuj wizytę</h1>
             <?php
@@ -219,9 +270,7 @@
               }
           ?>
         </div>
-        <div class="product-device box-shadow d-none d-md-block"></div>
-        <div class="product-device product-device-2 box-shadow d-none d-md-block"></div>
-    </div>
+    </div>   
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous">
