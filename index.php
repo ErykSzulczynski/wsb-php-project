@@ -23,16 +23,16 @@
         }
     }
 
-    if($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["user_id"])) {
-      $id = $_POST["id"];
+    else if($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["user_id"])) {
+      $id = $_POST["user_id"];
       $username = $_POST['username'];
-      $time = $_POST['time'];
-      $date = $_POST['date'];
+      $email = $_POST['email'];
 
-      $description = $_POST['description'];
-      $sql = "UPDATE reservations SET user='$username', time='$time', date='$date', description='$description' WHERE id='$id'";
+      $sql = "UPDATE user SET name='$username', email='$email' WHERE id='$id'";
 
       if (mysqli_query($mysqli, $sql)) {
+        session_destroy();
+        header("Location: index.php");
       } else {
           echo "Error: " . $sql . mysqli_error($mysqli);
       }
@@ -74,10 +74,7 @@
               <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                   <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                      <span aria-hidden="true">&times;</span>
-                    </button>
+                    <h5 class="modal-title" id="exampleModalLongTitle">Edycja użytkownika</h5>
                   </div>
                   <div class="modal-body">
                     <form method="post">
@@ -91,8 +88,9 @@
                     </div>
                     <div class="form-group">
                       <label for="formGroupExampleInput">Nazwa użytkownika klienta</label>
-                      <input type="text" class="form-control" id="formGroupExampleInput" name="email" placeholder="Email" value="'.$_SESSION["user_name"].'">
+                      <input type="text" class="form-control" id="formGroupExampleInput" name="email" placeholder="Email" value="'.$_SESSION["user_email"].'">
                     </div>
+                    Wykonanie edycji użytkownika wymaga ponownego zalogowania
                   </div>
                   <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Zamknij</button>
@@ -224,9 +222,7 @@
                     <div class="modal-content">
                       <div class="modal-header">
                         <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                          <span aria-hidden="true">&times;</span>
-                        </button>
+                        
                       </div>
                       <div class="modal-body">
                         <form method="post">
