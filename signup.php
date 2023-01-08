@@ -2,30 +2,25 @@
     $is_invalid = false;
     $invalid_msg = "";
 
-    #Jeżeli method w <form> = "post" to przechodzi if'a
     if($_SERVER["REQUEST_METHOD"] === "POST") {
         if(empty($_POST["email"])) {
             $is_invalid = true;
             $invalid_msg = "Email is required";
-            #die("Email is required");
         }
 
         if(! filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)){
             $is_invalid = true;
             $invalid_msg = "Email is not valid";
-            #die("Email is not valid");
         };
 
         if(strlen($_POST["password"]) < 8) {
             $is_invalid = true;
             $invalid_msg = "Password is too short";
-            #die("Password is too short");
         }
 
         if($_POST["password"] !== $_POST["password_confirmation"]) {
             $is_invalid = true;
             $invalid_msg = "Passwords do not match";
-            #die("Passwords do not match");
         }
 
         if($is_invalid == false) {
