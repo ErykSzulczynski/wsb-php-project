@@ -11,7 +11,7 @@
       exit;
     }
 
-    $mysqli = require __DIR__ . "../database.php";
+    $mysqli = require __DIR__ . "/database.php";
 
     if(isset($_GET['id'])) {
       $sql = sprintf("DELETE FROM reservations WHERE id=".$_GET['id']);
